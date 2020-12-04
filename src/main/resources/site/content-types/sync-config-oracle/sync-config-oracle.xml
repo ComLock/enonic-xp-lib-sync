@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<content-type>
+    <display-name>Sync config for oracle</display-name>
+    <super-type>base:structured</super-type>
+    <form>
+        <item-set name="source">
+            <label>Source (Oracle)</label>
+            <help-text></help-text>
+            <occurrences minimum="1" maximum="1"/>
+            <items>
+                <item-set name="connection">
+                    <label>Source connection</label>
+                    <help-text></help-text>
+                    <occurrences minimum="1" maximum="1"/>
+                    <items>
+                        <input name="host" type="TextLine">
+                          <label>Host</label>
+                          <help-text></help-text>
+                          <occurrences minimum="1" maximum="1"/>
+                          <default>localhost</default>
+                        </input>
+                        <input name="port" type="Long">
+                          <label>Port</label>
+                          <help-text></help-text>
+                          <occurrences minimum="0" maximum="1"/>
+                          <default>1521</default>
+                        </input>
+                        <input name="database" type="TextLine">
+                          <label>Database</label>
+                          <help-text></help-text>
+                          <occurrences minimum="1" maximum="1"/>
+                          <default></default>
+                        </input>
+                        <input name="user" type="TextLine">
+                          <label>User</label>
+                          <help-text></help-text>
+                          <occurrences minimum="1" maximum="1"/>
+                          <default></default>
+                        </input>
+                        <input name="password" type="TextLine">
+                          <label>Password</label>
+                          <help-text></help-text>
+                          <occurrences minimum="1" maximum="1"/>
+                          <default></default>
+                        </input>
+                        <!-- TODO Properties -->
+                    </items>
+                </item-set><!-- source.connection -->
+
+                <item-set name="query">
+                    <label>Source query</label>
+                    <help-text></help-text>
+                    <occurrences minimum="1" maximum="1"/>
+                    <items>
+                        <input name="columns" type="TextLine">
+                          <label>Columns</label>
+                          <help-text>Use double quotes around column name and alias. Column name is case sensitive. Alias will currently by lowercased. 'column_name' AS "name_i_like", count('column_name') AS "number_of_type"</help-text>
+                          <occurrences minimum="1" maximum="0"/>
+                          <default></default>
+                        </input>
+                        <input name="from" type="TextLine">
+                            <label>From</label>
+                            <help-text>table_name</help-text>
+                            <occurrences minimum="1" maximum="1"/>
+                            <default></default>
+                        </input>
+                        <input name="where" type="TextLine">
+                          <label>Where</label>
+                          <help-text>column_name IS NOT NULL</help-text>
+                          <occurrences minimum="0" maximum="1"/>
+                          <default></default>
+                        </input>
+                        <input name="groupBy" type="TextLine">
+                          <label>Group by</label>
+                          <help-text>column_name</help-text>
+                          <occurrences minimum="0" maximum="1"/>
+                          <default></default>
+                        </input>
+                        <input name="orderBy" type="TextLine">
+                          <label>Order by</label>
+                          <help-text>column_name ASC</help-text>
+                          <occurrences minimum="0" maximum="1"/>
+                          <default></default>
+                        </input>
+                    </items>
+                </item-set><!-- source.query -->
+
+            </items>
+        </item-set><!-- source -->
+
+        <item-set name="target">
+            <label>Target (Enonic)</label>
+            <help-text></help-text>
+            <occurrences minimum="1" maximum="1"/>
+            <items>
+                <input name="repoId" type="TextLine">
+                  <label>Repo id</label>
+                  <help-text></help-text>
+                  <occurrences minimum="1" maximum="1"/>
+                  <default></default>
+                </input>
+
+                <item-set name="properties">
+                    <label>Target property</label>
+                    <help-text>You must define a property with path _name, you should have _nodeType and possibly _parentPath</help-text>
+                    <occurrences minimum="1" maximum="0"/>
+                    <items>
+
+                        <input name="path" type="TextLine">
+                          <label>Property path</label>
+                          <help-text>'data.' + (this.source.path_column).split('/').filter(String).join('.')</help-text>
+                          <occurrences minimum="1" maximum="1"/>
+                          <default></default>
+                        </input>
+
+                        <input name="value" type="TextLine">
+                          <label>Property value</label>
+                          <help-text>(this.source.csv_column||'').split(',').filter(String)</help-text>
+                          <occurrences minimum="1" maximum="1"/>
+                          <default></default>
+                        </input>
+
+                        <option-set name="filter">
+                            <label>Filter</label>
+                            <help-text></help-text>
+                            <expanded>false</expanded>
+                            <occurrences minimum="0" maximum="0"/>
+                            <options minimum="1" maximum="1">
+
+                                <option name="trim">
+                                    <default>true</default>
+                                    <label>Trim</label>
+                                    <help-text></help-text>
+                                </option>
+
+                                <option name="capitalize">
+                                    <label>Capitalize</label>
+                                    <help-text></help-text>
+                                </option>
+
+                                <option name="toLowerCase">
+                                    <label>Lower case</label>
+                                    <help-text></help-text>
+                                </option>
+
+                                <option name="toUpperCase">
+                                    <label>Upper case</label>
+                                    <help-text></help-text>
+                                </option>
+
+                                <option name="mapping">
+                                    <label>Mapping</label>
+                                    <help-text></help-text>
+                                    <items>
+
+                                        <item-set name="rules">
+                                            <label>Rule</label>
+                                            <help-text></help-text>
+                                            <occurrences minimum="1" maximum="0"/>
+                                            <items>
+
+                                                <input name="match" type="TextLine">
+                                                  <label>Match</label>
+                                                  <help-text>^key$</help-text>
+                                                  <occurrences minimum="1" maximum="1"/>
+                                                  <default></default>
+                                                </input>
+
+                                                <input name="result" type="TextLine">
+                                                  <label>Result</label>
+                                                  <help-text>this.result[1]</help-text>
+                                                  <occurrences minimum="1" maximum="1"/>
+                                                  <default></default>
+                                                </input>
+
+                                                <item-set name="flags">
+                                                    <label>Flags</label>
+                                                    <help-text>If specified, flags can have any combination of the following values:</help-text>
+                                                    <occurrences minimum="0" maximum="1"/>
+                                                    <items>
+                                                        <input name="g" type="CheckBox">
+                                                            <label>Global</label>
+                                                            <help-text>Find all matches rather than stopping after the first match.</help-text>
+                                                            <occurrences minimum="0" maximum="1"/>
+                                                            <default>unchecked</default>
+                                                        </input>
+                                                        <input name="i" type="CheckBox">
+                                                            <label>Ignore case</label>
+                                                            <help-text>Ignore case</help-text>
+                                                            <occurrences minimum="0" maximum="1"/>
+                                                            <default>unchecked</default>
+                                                        </input>
+                                                        <input name="m" type="CheckBox">
+                                                            <label>Multiline</label>
+                                                            <help-text>Treat beginning and end characters (^ and $) as working over multiple lines (i.e., match the beginning or end of each line (delimited by \n or \r), not only the very beginning or end of the whole input string).</help-text>
+                                                            <occurrences minimum="0" maximum="1"/>
+                                                            <default>unchecked</default>
+                                                        </input>
+                                                        <input name="u" type="CheckBox">
+                                                            <label>Unicode</label>
+                                                            <help-text>Treat pattern as a sequence of unicode code points.</help-text>
+                                                            <occurrences minimum="0" maximum="1"/>
+                                                            <default>unchecked</default>
+                                                        </input>
+                                                        <input name="y" type="CheckBox">
+                                                            <label>Sticky</label>
+                                                            <help-text>Matches only from the index indicated by the lastIndex property of this regular expression in the target string (and does not attempt to match from any later indexes).</help-text>
+                                                            <occurrences minimum="0" maximum="1"/>
+                                                            <default>unchecked</default>
+                                                        </input>
+                                                    </items>
+                                                </item-set><!-- properties.filter.mapping.rules.flags -->
+
+                                            </items>
+                                        </item-set><!-- properties.filter.mapping.rules -->
+
+                                    </items>
+                                </option><!-- properties.filter.mapping -->
+
+                            </options>
+                        </option-set><!-- properties.filter -->
+
+                    </items>
+                </item-set><!-- target.properties -->
+
+            </items>
+        </item-set><!-- target -->
+
+    </form>
+</content-type>
